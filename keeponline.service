@@ -1,0 +1,14 @@
+[Unit]
+Description= Keep online
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=/run/keeponline.pid
+WorkingDirectory=/var/sustc-keeponline
+ExecStart=/usr/bin/python3 /var/sustc-keeponline/index.py
+User=pi
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

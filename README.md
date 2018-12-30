@@ -13,7 +13,16 @@ pip install -r requirements.txt
 ```
 
 # Usage
-1. copy or rename [config.yaml.example] to [config.yaml]
+## Normal Usage
+1. Copy or rename [config.yaml.example] to [config.yaml]
 2. Replace the balabalas by your network account fields.
 3. At root, run `python3 index.py` to start the main process and keep you online. 
-4. ~~Forget one thing, you can deploy it on a raspberry pi which never shuts down...like I do~~
+
+## Service usage[Only for linux/unix users]
+If you want to deploy it as a system service, you can follow this
+1. Simply copy [keeponline.service] to /etc/systemd/system
+2. Modify keeponline.service, correct WorkingDirectory, ExecStart, User filed.
+3. Run `sudo systemctl enable keeponline`
+4. Run `sudo systemctl start keeponline`
+
+
