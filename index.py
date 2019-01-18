@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import time, yaml
-import os
+import os, logging, sys
 
 def bet(str, tag1, tag2):
     index1 = 0
@@ -17,12 +17,14 @@ def work():
     """check if it's online or not and automatically sign in.
 
     """
-    global username, password
+    global username, password, logger
     session = requests.Session()
     page = session.get("http://detectportal.firefox.com/success.txt")
 
     if (page.content.decode().strip() == 'success'):
+        logger.info("connected, skip")
         return
+    logger.info("unconnected, try to reconnect")
     url = 'http://enet.10000.gd.cn:10001/sz/sz112/' + bet(page.content, b"window.location = \'", b"\';").decode()
 
     html = session.get(url).content
@@ -39,7 +41,10 @@ def work():
         "execution": execution
     }
     res = session.post('https://cas.sustc.edu.cn/cas/login?service=' + url, data=params)
-    print(res.content.find(b'success'))
+    if res.content.find(b'success') != -1:
+        logger.info("reconnect ok")
+    else:
+        logger.info("failed to reconnect")
 
 try:
     f = open('config.yaml','r',encoding='utf-8')
@@ -56,10 +61,14 @@ try:
 except KeyError:
     print("Error: wrong config format. Please follow [config.yaml.example]")
     exit(0)
+    
+logger = logging.getLogger()    # initialize logging class
+logger.setLevel(logging.INFO)  # default log level
+sh = logging.StreamHandler(stream=sys.stdout)    # output to standard output
+format = logging.Formatter("%(asctime)s - %(message)s")    # output format 
+sh.setFormatter(format)
+logger.addHandler(sh)
 
-cnt = 0
 while (True):
-    cnt = cnt + 1
-    print("#%d:working!" % cnt)
     work()
     time.sleep(10)
