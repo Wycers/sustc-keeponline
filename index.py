@@ -40,8 +40,12 @@ def work():
         "geolocation": "",
         "execution": execution
     }
-    res = session.post('https://cas.sustc.edu.cn/cas/login?service=' + url, data=params)
-    if res.content.find(b'success') != -1:
+    res = session.post('https://cas.sustech.edu.cn/cas/login?service=' + url, data=params)
+    text = res.content.decode()
+    # print(text)
+    if text.find("帐号状态为暂停") != -1:
+        logger.info("Kr Au")
+    elif text.find('成功') != -1:
         logger.info("reconnect ok")
     else:
         logger.info("failed to reconnect")
